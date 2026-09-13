@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
-import { PageSection } from '@components/templates/PageSection'
 
 interface GitCommit {
   hash: string
@@ -26,7 +24,6 @@ const Changelog: React.FC = () => {
         setCommits(data)
       } catch (err) {
         console.error('Error loading changelog:', err)
-        // In development, show a message that changelog is only available in production builds
         if (import.meta.env.DEV) {
           setError('Changelog is only available in production builds. Run `npm run build` to generate it.')
         } else {
@@ -48,16 +45,9 @@ const Changelog: React.FC = () => {
     return 'improvement'
   }
 
-  const typeColors: Record<'feature' | 'fix' | 'improvement' | 'security', string> = {
-    feature: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    fix: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-    improvement: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    security: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  }
-
-  const typeLabels: Record<'feature' | 'fix' | 'improvement' | 'security', string> = {
+  const typeLabels: Record<string, string> = {
     feature: 'Feature',
-    fix: 'Bug Fix',
+    fix: 'Fix',
     improvement: 'Improvement',
     security: 'Security',
   }
@@ -65,80 +55,38 @@ const Changelog: React.FC = () => {
   return (
     <>
       <Helmet>
-        <title>Changelog | Portfolio</title>
+        <title>Changelog | Parthiv Rawat</title>
         <meta
           name="description"
-          content="Track the latest updates, improvements, and maintenance activities for this portfolio"
+          content="Track the latest updates and improvements to this portfolio."
         />
       </Helmet>
 
-      <div className="min-h-screen">
-        {/* Hero Section */}
-        <PageSection
-          className="pt-28 pb-20"
-          backgroundClassName="bg-[radial-gradient(120%_150%_at_50%_-20%,#e3edff_0%,#f4f7ff_35%,#f9fbff_60%,#f0f5ff_100%)] dark:bg-[radial-gradient(140%_160%_at_50%_-10%,#0c1424_0%,#0f172a_45%,#020817_100%)]"
-          header={{
-            eyebrow: 'Updates',
-            title: 'Changelog',
-            subtitle:
-              'Track the latest updates, improvements, and maintenance activities for this portfolio. Built with transparency in mind.',
-            className: 'surface-panel p-12 md:p-16 text-center max-w-4xl mx-auto',
-          }}
-        />
+      <div className="min-h-screen bg-white dark:bg-gray-950">
+        <div className="max-w-prose mx-auto px-6 py-16">
+          <h1 className="text-4xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+            Changelog
+          </h1>
+          <p className="text-gray-700 dark:text-gray-300 mb-12">
+            A chronological record of improvements and maintenance from git history.
+          </p>
 
-        {/* Changelog Entries */}
-        <PageSection
-          className="section-padding"
-          header={{
-            eyebrow: 'History',
-            title: 'Recent Changes',
-            subtitle:
-              'A chronological record of improvements, bug fixes, and new features from git history.',
-            className: 'text-center mb-12',
-          }}
-        >
           {loading ? (
-            <div className="text-center text-slate-600 dark:text-slate-300">
-              Loading changelog...
-            </div>
+            <p className="text-gray-600 dark:text-gray-400">Loading changelog...</p>
           ) : error ? (
-            <div className="text-center text-red-600 dark:text-red-400">
-              {error}
-            </div>
+            <p className="text-red-600 dark:text-red-400">{error}</p>
           ) : commits.length === 0 ? (
-            <div className="text-center text-slate-600 dark:text-slate-300">
-              No changelog data available.
-            </div>
+            <p className="text-gray-600 dark:text-gray-400">No changelog data available.</p>
           ) : (
-            <div className="max-w-4xl mx-auto space-y-8" role="list">
-              {commits.map((commit, index) => {
+            <div className="space-y-8">
+              {commits.map((commit) => {
                 const type = getCommitType(commit.subject)
                 return (
-                  <motion.article
-                    key={commit.hash}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.05 }}
-                    className="surface-panel p-8 relative"
-                    role="listitem"
-                    aria-setsize={commits.length}
-                    aria-posinset={index + 1}
-                  >
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-                      <div className="flex items-center gap-4 mb-2 md:mb-0">
-                        <code className="text-sm font-mono text-primary-600 dark:text-primary-400">
-                          {commit.hash.slice(0, 7)}
-                        </code>
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold ${typeColors[type]}`}
-                        >
-                          {typeLabels[type]}
-                        </span>
-                      </div>
+                  <article key={commit.hash} className="border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
+                    <div className="flex items-baseline gap-4 mb-2 flex-wrap">
                       <time
                         dateTime={commit.date}
-                        className="text-sm text-slate-500 dark:text-slate-400"
+                        className="text-sm text-gray-500 dark:text-gray-500"
                       >
                         {new Date(commit.date).toLocaleDateString('en-US', {
                           year: 'numeric',
@@ -146,22 +94,24 @@ const Changelog: React.FC = () => {
                           day: 'numeric',
                         })}
                       </time>
+                      <span className="text-sm text-gray-500 dark:text-gray-500">
+                        {typeLabels[type]}
+                      </span>
                     </div>
-
-                    <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
                       {commit.subject}
                     </h3>
                     {commit.body && (
-                      <p className="text-slate-600 dark:text-slate-300 whitespace-pre-wrap">
+                      <p className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
                         {commit.body}
                       </p>
                     )}
-                  </motion.article>
+                  </article>
                 )
               })}
             </div>
           )}
-        </PageSection>
+        </div>
       </div>
     </>
   )

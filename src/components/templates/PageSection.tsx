@@ -1,74 +1,48 @@
 import type { ReactNode } from 'react'
-import { cn } from '@/utils/cn'
-import { Surface, Heading, Text, Eyebrow, FadeIn } from '@/design-system'
 
 export interface PageSectionHeaderProps {
-  /** Optional eyebrow text shown above the title. */
   eyebrow?: string
-  /** Section title. Can be a string or custom element. */
   title: ReactNode
-  /** Optional subtitle or description. */
   subtitle?: ReactNode
-  /** Additional classes for the header container. */
   className?: string
 }
 
 export interface PageSectionProps {
-  /** Optional id for the section element. */
   id?: string
-  /** Additional classes for the section element. */
   className?: string
-  /** Classes for the absolute background element. */
-  backgroundClassName?: string
-  /** Decorative elements (floating blobs, etc.) rendered before the container. */
-  decorations?: ReactNode
-  /** Optional header to render inside the container. */
   header?: PageSectionHeaderProps
-  /** Section content. */
   children?: ReactNode
 }
 
-/**
- * Reusable page section wrapper.
- *
- * Provides a consistent outer `<section>`, optional background,
- * decorative elements, and an animated header block.
- */
 export const PageSection: React.FC<PageSectionProps> = ({
   id,
   className,
-  backgroundClassName,
-  decorations,
   header,
   children,
 }) => {
   return (
-    <section id={id} className={cn('relative overflow-hidden', className)}>
-      {backgroundClassName && (
-        <div className={cn('absolute inset-0 -z-10', backgroundClassName)} />
-      )}
-      {decorations}
-      <div className="container-max">
+    <section id={id} className={className}>
+      <div className="max-w-content mx-auto px-6">
         {header && (
-          <FadeIn className="mb-12" initial>
-            <Surface className={header.className ?? 'p-10 md:p-14 text-center'}>
-              {header.eyebrow && (
-                <Eyebrow className="mb-4 mx-auto">{header.eyebrow}</Eyebrow>
-              )}
-              {typeof header.title === 'string' ? (
-                <Heading as="h2" size="lg" className="mb-4">
-                  {header.title}
-                </Heading>
-              ) : (
-                header.title
-              )}
-              {header.subtitle && (
-                <Text size="lg" muted className="max-w-2xl mx-auto">
-                  {header.subtitle}
-                </Text>
-              )}
-            </Surface>
-          </FadeIn>
+          <header className={header.className ?? 'mb-12'}>
+            {header.eyebrow && (
+              <span className="text-sm text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+                {header.eyebrow}
+              </span>
+            )}
+            {typeof header.title === 'string' ? (
+              <h1 className="text-4xl font-semibold text-gray-900 dark:text-gray-100 mt-2 mb-4">
+                {header.title}
+              </h1>
+            ) : (
+              header.title
+            )}
+            {header.subtitle && (
+              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl">
+                {header.subtitle}
+              </p>
+            )}
+          </header>
         )}
         {children}
       </div>

@@ -14,7 +14,7 @@ export const captureException = (
   console.error('Error:', error, context)
 
   // Capture the error in Sentry
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.PROD) {
     Sentry.withScope(scope => {
       if (context) {
         scope.setExtras(context)
@@ -46,7 +46,7 @@ export const captureMessage = (
   consoleMethod(message)
 
   // Capture in Sentry in production
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.PROD) {
     Sentry.captureMessage(message, sentryLevel as Sentry.SeverityLevel)
   }
 }
@@ -68,12 +68,12 @@ export type { FallbackRender }
 // Initialize Sentry in the entry point of your app
 export const initSentry = (): void => {
   if (
-    process.env.NODE_ENV === 'production' &&
+    import.meta.env.PROD &&
     import.meta.env.VITE_SENTRY_DSN
   ) {
     Sentry.init({
       dsn: import.meta.env.VITE_SENTRY_DSN,
-      environment: process.env.NODE_ENV || 'development',
+      environment: import.meta.env.MODE,
       integrations: [
         Sentry.browserTracingIntegration(),
         Sentry.replayIntegration(),

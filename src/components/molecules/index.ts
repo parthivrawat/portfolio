@@ -1,2 +1,1 @@
-// Export molecule components here
-export {}
+export { default as SocialLinks } from './SocialLinks'

@@ -1,6 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import React, { StrictMode, Suspense } from 'react'
-import ReactDOM from 'react-dom'
+import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
@@ -13,28 +11,15 @@ import './styles/globals.css'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
       retry: false,
     },
   },
 })
 
-// Initialize Sentry for error tracking
 initSentry()
 
-// Run @axe-core/react accessibility checks in development only
-if (import.meta.env.DEV) {
-  import('@axe-core/react')
-    .then(({ default: axe }) => {
-      axe(React, ReactDOM, 1000)
-    })
-    .catch(() => {
-      // axe-core is optional; ignore load errors in dev
-    })
-}
-
-// Define the ErrorFallback component
 const ErrorFallback = ({
   error,
   resetError,
@@ -42,41 +27,33 @@ const ErrorFallback = ({
   error: Error
   resetError: () => void
 }) => (
-  <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-    <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-red-600 mb-4">
-        Oops! Something went wrong
+  <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-gray-950">
+    <div className="max-w-prose">
+      <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+        Something went wrong
       </h2>
-      <p className="text-gray-700 mb-4">
-        We're sorry, but an unexpected error occurred. Our team has been
-        notified.
+      <p className="text-gray-700 dark:text-gray-300 mb-6">
+        We apologize, but an unexpected error occurred.
       </p>
-      {process.env.NODE_ENV === 'development' && (
-        <div className="bg-gray-100 p-3 rounded mb-4">
-          <p className="text-sm text-red-700 font-mono">{error.message}</p>
-        </div>
+      {import.meta.env.DEV && (
+        <p className="text-sm text-red-600 dark:text-red-400 mb-6 font-mono">
+          {error.message}
+        </p>
       )}
       <button
         onClick={resetError}
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+        className="text-primary-600 dark:text-primary-400 hover:underline"
       >
-        Try Again
+        Try again
       </button>
     </div>
-  </div>
-)
-
-// Loading spinner component
-const LoadingSpinner = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-50">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
   </div>
 )
 
 const AppContainer = () => (
   <StrictMode>
     <ErrorBoundary fallback={ErrorFallback}>
-      <Suspense fallback={<LoadingSpinner />}>
+      <Suspense fallback={<div className="min-h-screen" />}>
         <QueryClientProvider client={queryClient}>
           <HelmetProvider>
             <BrowserRouter>
@@ -90,18 +67,8 @@ const AppContainer = () => (
   </StrictMode>
 )
 
-// Initialize the app
 const container = document.getElementById('root')
 if (container) {
   const root = createRoot(container)
-
-  // Use requestIdleCallback if available, otherwise render immediately
-  if ('requestIdleCallback' in window) {
-    window.requestIdleCallback(
-      () => root.render(<AppContainer />),
-      { timeout: 2000 } // Wait max 2 seconds before starting render
-    )
-  } else {
-    root.render(<AppContainer />)
-  }
+  root.render(<AppContainer />)
 }

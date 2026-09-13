@@ -1,34 +1,11 @@
-import { memo } from 'react'
-import { HiExternalLink, HiCode, HiStar, HiEye } from 'react-icons/hi'
 import { formatRelativeTime } from '@/utils/formatRelativeTime'
-import { Tooltip } from 'react-tooltip'
-import { cn } from '@/utils/cn'
-import { FadeIn, Badge } from '@/design-system'
+import type { Repository } from '@/types/github'
 
-/**
- * Represents a GitHub repository with its relevant properties
- */
-export interface GitHubRepository {
-  name: string
-  description: string | null
-  html_url: string
-  stargazers_count: number
-  forks_count: number
-  watchers_count: number
-  language: string | null
-  updated_at: string
-  homepage?: string | null
-}
-
-/**
- * Props for the ProjectCard component
- */
 interface ProjectCardProps {
-  project: GitHubRepository
+  project: Repository
   index?: number
 }
 
-// Language colors for the language indicator
 const languageColors: Record<string, string> = {
   TypeScript: 'bg-blue-500',
   JavaScript: 'bg-yellow-400',
@@ -47,136 +24,65 @@ const languageColors: Record<string, string> = {
   Dart: 'bg-blue-400',
 }
 
-/**
- * A card component that displays information about a GitHub repository
- */
-const ProjectCard = ({ project, index = 0 }: ProjectCardProps): JSX.Element => {
+const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
   const lastUpdated = formatRelativeTime(project.updated_at)
-  const tooltipId = `project-tooltip-${project.name.replace(/[^a-zA-Z0-9]/g, '-')}-${index}`
-
-  const {
-    name,
-    description,
-    html_url,
-    homepage,
-    stargazers_count = 0,
-    forks_count = 0,
-    watchers_count = 0,
-    language,
-  } = project
 
   const displayName =
-    name
+    project.name
       .split(/[-_\s]+/)
       .filter(Boolean)
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ') || 'Unnamed Project'
-  const displayDescription = description || 'No description available'
+
+  const repo = project as { homepage?: string | null; [key: string]: unknown }
+  const homepage =
+    typeof repo.homepage === 'string' ? repo.homepage : null
 
   return (
-    <FadeIn direction="up" delay={index * 60} duration={500} className="h-full">
-      <article className="group relative h-full transform bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm rounded-2xl overflow-hidden border border-white/60 dark:border-slate-800/70 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-        <div className="relative p-6 space-y-4">
-          <div className="flex justify-between items-start">
-            <h3 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 dark:from-primary-400 dark:to-primary-300 bg-clip-text text-transparent">
-              {displayName}
-            </h3>
-            <div className="flex space-x-2">
-              {homepage && (
-                <a
-                  href={homepage}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  data-tooltip-id={tooltipId}
-                  data-tooltip-content="View live demo"
-                  className="p-1.5 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-110 active:scale-95"
-                  aria-label="View live demo"
-                >
-                  <HiExternalLink className="h-4 w-4" />
-                </a>
-              )}
-              <a
-                href={html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-tooltip-id={tooltipId}
-                data-tooltip-content="View source code on GitHub"
-                className="p-1.5 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-200 hover:scale-110 active:scale-95"
-                aria-label="View source code"
-              >
-                <HiCode className="h-4 w-4" />
-              </a>
-            </div>
-          </div>
-
-          <p className="text-gray-600 dark:text-gray-300">
-            {displayDescription}
-          </p>
-
-          <div className="pt-2 mt-4 border-t border-gray-100 dark:border-slate-800">
-            <div className="flex flex-wrap gap-4 text-sm text-gray-500 dark:text-gray-400">
-              {language && (
-                <Badge className="cursor-default hover:scale-105 transition-transform duration-200">
-                  <span
-                    className={cn(
-                      'w-2.5 h-2.5 rounded-full mr-1.5',
-                      languageColors[language] || 'bg-gray-400'
-                    )}
-                  />
-                  {language}
-                </Badge>
-              )}
-              <Badge className="cursor-default hover:scale-105 transition-transform duration-200">
-                <HiStar className="h-3.5 w-3.5 mr-1 text-amber-400" />
-                <span>{stargazers_count.toLocaleString()}</span>
-              </Badge>
-              <Badge className="cursor-default hover:scale-105 transition-transform duration-200">
-                <HiEye className="h-3.5 w-3.5 mr-1 text-purple-400" />
-                <span>{watchers_count.toLocaleString()}</span>
-              </Badge>
-              <Badge className="cursor-default hover:scale-105 transition-transform duration-200">
-                <HiCode className="h-3.5 w-3.5 mr-1 text-blue-400 transform rotate-90" />
-                <span>{forks_count.toLocaleString()}</span>
-              </Badge>
-            </div>
-
-            <div className="mt-3 text-xs text-gray-400 dark:text-gray-500">
-              Updated {lastUpdated}
-            </div>
-          </div>
-        </div>
-
-        <Tooltip
-          id={tooltipId}
-          place="top"
-          className="z-50"
-          globalCloseEvents={{ escape: true }}
-        />
-      </article>
-    </FadeIn>
+    <article className="border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
+      <div className="flex items-baseline justify-between gap-4 mb-2 flex-wrap">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+          {displayName}
+        </h3>
+        {project.language && (
+          <span className="text-sm text-gray-500 dark:text-gray-500 flex items-center gap-2">
+            <span className={`w-2 h-2 rounded-full ${languageColors[project.language] || 'bg-gray-400'}`} />
+            {project.language}
+          </span>
+        )}
+      </div>
+      <p className="text-gray-700 dark:text-gray-300 mb-3">
+        {project.description || 'No description available'}
+      </p>
+      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-500">
+        <span>★ {project.stargazers_count.toLocaleString()}</span>
+        <span>{project.forks_count.toLocaleString()} forks</span>
+        <span>
+          Updated <time dateTime={project.updated_at}>{lastUpdated}</time>
+        </span>
+      </div>
+      <div className="flex gap-4 mt-4">
+        <a
+          href={project.html_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+        >
+          Source →
+        </a>
+        {homepage && (
+          <a
+            href={homepage}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+          >
+            Live →
+          </a>
+        )}
+      </div>
+    </article>
   )
 }
 
-// Custom comparison function for React.memo
-const arePropsEqual = (
-  prevProps: ProjectCardProps,
-  nextProps: ProjectCardProps
-) => {
-  // Only re-render if the project data or index has changed
-  return (
-    prevProps.index === nextProps.index &&
-    prevProps.project.name === nextProps.project.name &&
-    prevProps.project.description === nextProps.project.description &&
-    prevProps.project.html_url === nextProps.project.html_url &&
-    prevProps.project.homepage === nextProps.project.homepage &&
-    prevProps.project.stargazers_count === nextProps.project.stargazers_count &&
-    prevProps.project.forks_count === nextProps.project.forks_count &&
-    prevProps.project.watchers_count === nextProps.project.watchers_count &&
-    prevProps.project.language === nextProps.project.language &&
-    prevProps.project.updated_at === nextProps.project.updated_at
-  )
-}
-
-export default memo(ProjectCard, arePropsEqual)
+export default ProjectCard

@@ -1,287 +1,104 @@
-import { useMemo, ReactElement } from 'react'
-import { motion, Variants } from 'framer-motion'
+import { ReactElement } from 'react'
 import { Helmet } from 'react-helmet-async'
-import { HiArrowRight, HiDownload } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
-import ProjectCard from '@components/organisms/ProjectCard'
-import PageSection from '@components/templates/PageSection'
-import LoadingSpinner from '@components/atoms/LoadingSpinner'
-import { useGitHubRepositories } from '@/hooks/useGitHub'
-import type { Repository } from '@/types/github'
-
-// Extend the Variants type to include our specific structure
-type MotionVariants = Variants & {
-  hidden: {
-    opacity: number
-    y?: number
-    [key: string]: unknown // Add index signature
-  }
-  visible: {
-    opacity: number
-    y?: number
-    transition?: {
-      staggerChildren?: number
-      [key: string]: unknown // Add index signature
-    }
-    [key: string]: unknown // Add index signature
-  }
-}
-
-// Animation variants for the container
-const containerVariants: MotionVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-}
-
-// Animation variants for individual items
-const itemVariants: MotionVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-}
-
-const highlightStats = [
-  {
-    label: 'Enterprise Releases',
-    value: '30+',
-    description:
-      'Secure modules shipped across admin consoles and enterprise SaaS.',
-  },
-  {
-    label: 'Cloud Deployments',
-    value: 'GCP · App Engine',
-    description:
-      'Production workloads tuned for resilience, observability, and scale.',
-  },
-  {
-    label: 'Identity & APIs',
-    value: 'DID · REST · GraphQL',
-    description:
-      'High-trust authentication flows and high-performance service design.',
-  },
-]
+import { packageLinks } from '@/data/socialLinks'
+import { essays } from '@/data/essays'
 
 const Home: React.FC = (): ReactElement => {
-  const {
-    repositories,
-    loading,
-    error,
-    refetch,
-    isInitialLoading,
-    isRefreshing,
-  } = useGitHubRepositories()
-
-  // Get top 6 projects by stars
-  const featuredProjects: Repository[] = useMemo(() => {
-    if (!repositories) return []
-    return [...repositories]
-      .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
-      .slice(0, 6)
-  }, [repositories])
-
-  const handleRetry = (): void => {
-    refetch()
-  }
-
-  // Handle loading state
-  if (isInitialLoading || loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-12 h-12">
-          <LoadingSpinner />
-        </div>
-      </div>
-    )
-  }
-
-  // Handle error state
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">
-            {error.status ? `Error (${error.status}): ` : 'Error: '}
-            {error.message || 'Failed to load repositories'}
-          </p>
-          <button
-            onClick={handleRetry}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            disabled={isRefreshing}
-          >
-            {isRefreshing ? 'Retrying...' : 'Retry'}
-          </button>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <>
       <Helmet>
-        <title>Home | Portfolio</title>
+        <title>Parthiv Rawat</title>
         <meta
           name="description"
-          content="Go and React full-stack developer delivering secure, cloud-native platforms"
+          content="Full-stack developer delivering secure, cloud-native platforms. Go, React, and distributed systems."
         />
       </Helmet>
 
-      <div className="min-h-screen">
-        {/* Hero Section */}
-        <section className="relative overflow-hidden pt-28 lg:pt-32 pb-20">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(120%_150%_at_50%_-20%,#e3edff_0%,#f4f7ff_35%,#f9fbff_60%,#f0f5ff_100%)] dark:bg-[radial-gradient(140%_160%_at_50%_-10%,#0b1220_0%,#0f172a_40%,#020817_100%)]" />
+      <div className="min-h-screen bg-white dark:bg-gray-950">
+        <div className="max-w-prose mx-auto px-6 py-16">
+          <section className="mb-16">
+            <h1 className="text-4xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
+              Hello, I'm Parthiv Rawat.
+            </h1>
+            
+            <div className="prose prose-lg dark:prose-invert max-w-none">
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                I am a full-stack developer building secure, cloud-native platforms with Go and React.
+              </p>
+              
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                I work at the intersection of technology, product, and platforms. Technology shapes design space for product. Product shapes technical architecture. Carefully engineered interactions and incentives enable thriving platforms.
+              </p>
 
-          <div className="container-max">
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              className="grid gap-12 lg:grid-cols-[1.6fr_1fr] items-center"
-            >
-              <div>
-                <motion.span variants={itemVariants} className="eyebrow mb-6">
-                  Secure Cloud Engineering
-                </motion.span>
-                <motion.h1
-                  variants={itemVariants}
-                  className="font-heading text-4xl md:text-6xl leading-tight text-slate-900 dark:text-white mb-6"
-                >
-                  I build resilient Go + React platforms that keep identity and
-                  data safe.
-                </motion.h1>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                I specialize in decentralized identity workflows, micro-frontend delivery, and GCP-backed services. I've shipped 30+ secure modules across admin consoles and enterprise SaaS platforms.
+              </p>
 
-                <motion.p
-                  variants={itemVariants}
-                  className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mb-10"
-                >
-                  From decentralized identity workflows to micro-frontend
-                  delivery, I align security, performance, and developer
-                  velocity across every release.
-                </motion.p>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                I'm passionate about improving developer experience and building maintainable systems. I publish packages on{' '}
+                {packageLinks.map((link, index) => (
+                  <span key={link.name}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-600 dark:text-primary-400 hover:underline inline-flex items-center gap-1"
+                      aria-label={link.iconLabel}
+                    >
+                      <link.icon size={14} aria-hidden="true" />
+                      {link.name}
+                    </a>
+                    {index < packageLinks.length - 1 && ', '}
+                  </span>
+                ))}
+                .
+              </p>
+            </div>
+          </section>
 
-                <motion.div
-                  variants={itemVariants}
-                  className="flex flex-col sm:flex-row sm:items-center gap-4"
-                >
-                  <Link
-                    to="/projects"
-                    className="btn-primary inline-flex items-center"
-                  >
-                    View My Work
-                    <HiArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                  <a
-                    href="/Full_Stack_Resume.pdf"
-                    download
-                    className="btn-secondary inline-flex items-center"
-                  >
-                    <HiDownload className="w-5 h-5 mr-2" />
-                    Download Resume
-                  </a>
-                </motion.div>
-
-                <motion.div
-                  variants={itemVariants}
-                  className="mt-10 grid gap-4 sm:grid-cols-3"
-                >
-                  {highlightStats.map(stat => (
-                    <div key={stat.label} className="surface-panel p-5">
-                      <p className="text-sm uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 mb-2">
-                        {stat.label}
-                      </p>
-                      <p className="text-3xl font-semibold text-primary-700 dark:text-primary-300">
-                        {stat.value}
-                      </p>
-                      <p className="text-sm mt-3 text-slate-600 dark:text-slate-300">
-                        {stat.description}
-                      </p>
-                    </div>
-                  ))}
-                </motion.div>
-              </div>
-
-              <motion.div
-                variants={itemVariants}
-                className="surface-panel p-8 relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#60a5fa1a,transparent_65%)] dark:bg-[radial-gradient(circle_at_top,#2563eb33,transparent_65%)]" />
-                <div className="relative space-y-6">
-                  <h2 className="font-heading text-2xl text-slate-900 dark:text-white">
-                    Current Focus
-                  </h2>
-                  <p className="text-slate-600 dark:text-slate-300">
-                    Orchestrating decentralized identity flows, evolving
-                    module-federated frontends, and raising reliability
-                    envelopes across GCP-backed services.
+          <section className="mb-16">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-8">
+              Recent essays
+            </h2>
+            
+            <div className="space-y-8">
+              {essays.map((essay) => (
+                <article key={essay.slug} className="border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
+                  <time dateTime={new Date(essay.date).toISOString()} className="text-sm text-gray-500 dark:text-gray-500">
+                    {essay.date}
+                  </time>
+                  <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mt-2 mb-3">
+                    <Link to={`/essays/${essay.slug}`} className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                      {essay.title}
+                    </Link>
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    {essay.description}
                   </p>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      'Decentralized Identity',
-                      'Micro Frontends',
-                      'Reliability Engineering',
-                    ].map(tag => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-200 px-3 py-1 text-sm font-medium"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
+                </article>
+              ))}
+            </div>
+          </section>
 
-        {/* Featured Projects Section */}
-        <PageSection
-          className="section-padding bg-white/70 dark:bg-slate-950/50"
-          header={{
-            eyebrow: 'Selected Works',
-            title: 'Featured Projects',
-            subtitle:
-              'Crafting efficient architectures, mindful user journeys, and maintainable codebases. Explore a snapshot of the things I build.',
-            className: 'surface-panel p-10 text-center mb-12',
-          }}
-        >
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            role="list"
-          >
-            {featuredProjects.map((project: Repository, index: number) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                role="listitem"
-                aria-setsize={featuredProjects.length}
-                aria-posinset={index + 1}
+          <section className="border-t border-gray-200 dark:border-gray-800 pt-8">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <Link
+                to="/projects"
+                className="inline-block text-primary-600 dark:text-primary-400 hover:underline"
               >
-                <ProjectCard project={project} index={index} />
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-center mt-12"
-          >
-            <Link
-              to="/projects"
-              className="inline-flex items-center text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-200 text-lg font-medium transition-colors"
-            >
-              View All Projects
-              <HiArrowRight className="w-5 h-5 ml-2" />
-            </Link>
-          </motion.div>
-        </PageSection>
+                View all projects →
+              </Link>
+              <a
+                href="/Full_Stack_Resume.pdf"
+                download
+                className="inline-block text-primary-600 dark:text-primary-400 hover:underline"
+              >
+                Download resume →
+              </a>
+            </div>
+          </section>
+        </div>
       </div>
     </>
   )

@@ -1,8 +1,6 @@
-/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
-import { visualizer } from 'rollup-plugin-visualizer'
 import path from 'path'
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
@@ -202,6 +200,12 @@ const pwaOptions: import('vite-plugin-pwa').VitePWAOptions = {
     lang: 'en',
     icons: [
       {
+        src: '/favicon.svg',
+        sizes: 'any',
+        type: 'image/svg+xml',
+        purpose: 'any',
+      },
+      {
         src: '/logo192.png',
         sizes: '192x192',
         type: 'image/png',
@@ -210,12 +214,6 @@ const pwaOptions: import('vite-plugin-pwa').VitePWAOptions = {
       {
         src: '/logo512.png',
         sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any',
-      },
-      {
-        src: '/apple-touch-icon.png',
-        sizes: '192x192',
         type: 'image/png',
         purpose: 'any',
       },
@@ -248,7 +246,7 @@ const pwaOptions: import('vite-plugin-pwa').VitePWAOptions = {
     globPatterns: ['**/*.{js,css,html,ico,png,svg,pdf}'],
   },
   registerType: 'autoUpdate' as const,
-  includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
+  includeAssets: ['favicon.svg', 'logo192.png', 'logo512.png'],
   workbox: {
     clientsClaim: true,
     skipWaiting: true,
@@ -292,15 +290,7 @@ export default defineConfig(({ mode }) => {
       VitePWA(pwaOptions),
       changelogPlugin(),
       seoFilesPlugin(),
-      // Bundle analyzer only runs when ANALYZE=true and never auto-opens a browser
-      process.env.ANALYZE === 'true' &&
-        (visualizer({
-          open: false,
-          gzipSize: true,
-          brotliSize: true,
-          filename: 'bundle-analyzer.html',
-        }) as PluginOption),
-    ],
+    ].filter(Boolean),
     publicDir: 'public',
     // preview: {
     //   port: 4173,
@@ -319,7 +309,6 @@ export default defineConfig(({ mode }) => {
             // Separate vendor chunks for better caching
             react: ['react', 'react-dom', 'react-router-dom'],
             'react-icons': ['react-icons/hi', 'react-icons/fa'],
-            utils: ['clsx', 'tailwind-merge'],
           },
           // Optimize chunk naming for better caching
           chunkFileNames: chunkInfo => {
@@ -380,8 +369,6 @@ export default defineConfig(({ mode }) => {
         '@styles': path.resolve(dirname, './src/styles'),
         '@types': path.resolve(dirname, './src/types'),
         '@constants': path.resolve(dirname, './src/constants'),
-        // Lightweight CSS-only shim for framer-motion's API
-        'framer-motion': path.resolve(dirname, './src/lib/framer-motion.tsx'),
       },
     },
     optimizeDeps: {
@@ -407,22 +394,6 @@ export default defineConfig(({ mode }) => {
       fs: {
         // Restrict serving files to the project root only
         allow: ['.'],
-      },
-    },
-    test: {
-      globals: true,
-      environment: 'jsdom',
-      setupFiles: './src/setupTests.ts',
-      exclude: [
-        'node_modules/**',
-        'dist/**',
-        'e2e/**',
-        '**/*.spec.ts',
-        '**/*.spec.tsx',
-        '**/*.stories.*',
-      ],
-      coverage: {
-        reporter: ['text', 'json', 'html'],
       },
     },
   }
