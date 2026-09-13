@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { NewsletterSignup } from '@components'
 
 interface GitCommit {
   hash: string
@@ -86,7 +87,7 @@ const Changelog: React.FC = () => {
                     <div className="flex items-baseline gap-4 mb-2 flex-wrap">
                       <time
                         dateTime={commit.date}
-                        className="text-sm text-gray-500 dark:text-gray-500"
+                        className="text-sm text-gray-500 dark:text-gray-400"
                       >
                         {new Date(commit.date).toLocaleDateString('en-US', {
                           year: 'numeric',
@@ -94,7 +95,7 @@ const Changelog: React.FC = () => {
                           day: 'numeric',
                         })}
                       </time>
-                      <span className="text-sm text-gray-500 dark:text-gray-500">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
                         {typeLabels[type]}
                       </span>
                     </div>
@@ -111,6 +112,8 @@ const Changelog: React.FC = () => {
               })}
             </div>
           )}
+
+          <NewsletterSignup />
         </div>
       </div>
     </>

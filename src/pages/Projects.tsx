@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { NewsletterSignup } from '@components'
 import ProjectCard from '@/components/organisms/ProjectCard'
 import LoadingSpinner from '@/components/atoms/LoadingSpinner'
 import { useGitHubRepositories } from '@/hooks/useGitHub'
@@ -111,7 +112,7 @@ const Projects: React.FC = () => {
                     className={`text-sm transition-colors ${
                       active
                         ? 'text-gray-900 dark:text-gray-100 underline'
-                        : 'text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-gray-100'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
                     }`}
                   >
                     {label}
@@ -128,7 +129,7 @@ const Projects: React.FC = () => {
                       {study.title}
                     </h3>
                     {study.status && (
-                      <span className="text-sm text-gray-500 dark:text-gray-500">
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
                         {study.status}
                       </span>
                     )}
@@ -201,12 +202,14 @@ const Projects: React.FC = () => {
               <p
                 role="status"
                 aria-live="polite"
-                className="text-center text-gray-500 dark:text-gray-500 py-8"
+                className="text-center text-gray-500 dark:text-gray-400 py-8"
               >
                 No projects found. Try adjusting your search.
               </p>
             )}
           </section>
+
+          <NewsletterSignup />
         </div>
       </div>
     </>

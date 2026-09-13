@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import { NewsletterSignup } from '@components'
 import { getEssayBySlug } from '@/data/essays'
 import NotFound from './NotFound'
 
@@ -20,7 +21,7 @@ const Essay: React.FC = () => {
 
       <div className="min-h-screen bg-white dark:bg-gray-950">
         <div className="max-w-prose mx-auto px-6 py-16">
-          <time dateTime={new Date(essay.date).toISOString()} className="text-sm text-gray-500 dark:text-gray-500">
+          <time dateTime={new Date(essay.date).toISOString()} className="text-sm text-gray-500 dark:text-gray-400">
             {essay.date}
           </time>
           <h1 className="text-4xl font-semibold text-gray-900 dark:text-gray-100 mt-2 mb-6">
@@ -34,6 +35,8 @@ const Essay: React.FC = () => {
               </p>
             ))}
           </div>
+
+          <NewsletterSignup />
 
           <Link
             to="/essays"

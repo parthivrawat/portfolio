@@ -1,5 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from 'react'
 import { Helmet } from 'react-helmet-async'
+import { NewsletterSignup } from '@components'
+import Button from '@/components/atoms/Button'
 
 interface FormData {
   name: string
@@ -113,9 +115,10 @@ const Contact: React.FC = () => {
         setFormData({ name: '', email: '', subject: '', message: '' })
         setErrors({ name: '', email: '', subject: '', message: '' })
       } else {
+        const data = await response.json().catch(() => ({}))
         setSubmitStatus({
           type: 'error',
-          message: 'Submission failed. Please try again.',
+          message: data.error || data.message || 'Submission failed. Please try again.',
         })
       }
     } catch {
@@ -215,13 +218,13 @@ const Contact: React.FC = () => {
             {formGroup('Subject', 'subject', 'text', { placeholder: 'What is this about?' })}
             {formGroup('Message', 'message', 'textarea', { placeholder: 'Your message...' })}
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-1 px-5 py-2.5 rounded bg-primary-600 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="py-2.5"
             >
               {isSubmitting ? 'Sending...' : 'Send message →'}
-            </button>
+            </Button>
           </form>
 
           <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
@@ -229,6 +232,8 @@ const Contact: React.FC = () => {
               Find my social links in the footer.
             </p>
           </div>
+
+          <NewsletterSignup />
         </div>
       </div>
     </>

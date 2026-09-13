@@ -10,6 +10,7 @@ A responsive developer portfolio built with React 19, TypeScript, Vite, and Tail
 - **SEO:** React Helmet Async, canonical links, Open Graph, JSON-LD, sitemap, robots.txt, and RSS feed
 - **Error Tracking:** Sentry integration via `VITE_SENTRY_DSN`
 - **PWA:** Vite PWA Plugin with generated service worker
+- **Newsletter:** Substack subscription signup on essays with email confirmation
 - **Accessibility:** Skip-to-content link, focus-visible styles, ARIA labels, and live regions
 
 ## Tech Stack
@@ -63,6 +64,7 @@ Copy `.env.example` to `.env` and fill in your own values:
 | `VITE_SITE_URL` | Canonical, Open Graph, sitemap, and feed URLs |
 | `VITE_SENTRY_DSN` | Sentry error tracking (optional) |
 | `VITE_FORMSPREE_FORM_ID` | Contact form endpoint (optional) |
+| `VITE_SUBSTACK_DOMAIN` | Substack publication domain for newsletter signup (optional) |
 
 ## Project Structure
 
@@ -85,6 +87,7 @@ src/
 1. Update personal info in `src/data/` files.
 2. Replace images and the resume PDF in `public/`.
 3. Set `VITE_FORMSPREE_FORM_ID` for the contact form.
+4. Set `VITE_SUBSTACK_DOMAIN` for the newsletter signup on essay pages.
 
 ## Deployment
 

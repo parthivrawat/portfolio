@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { packageLinks } from '@/data/socialLinks'
 import { essays } from '@/data/essays'
+import { NewsletterSignup } from '@components'
 
 const Home: React.FC = (): ReactElement => {
   return (
@@ -57,6 +58,8 @@ const Home: React.FC = (): ReactElement => {
             </div>
           </section>
 
+          <NewsletterSignup placement="top" variant="simple" />
+
           <section className="mb-16">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-8">
               Recent essays
@@ -65,7 +68,7 @@ const Home: React.FC = (): ReactElement => {
             <div className="space-y-8">
               {essays.map((essay) => (
                 <article key={essay.slug} className="border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
-                  <time dateTime={new Date(essay.date).toISOString()} className="text-sm text-gray-500 dark:text-gray-500">
+                  <time dateTime={new Date(essay.date).toISOString()} className="text-sm text-gray-500 dark:text-gray-400">
                     {essay.date}
                   </time>
                   <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mt-2 mb-3">

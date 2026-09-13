@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
+import { NewsletterSignup } from '@components'
 import { essays } from '@/data/essays'
 
 const Essays: React.FC = () => {
@@ -25,7 +26,7 @@ const Essays: React.FC = () => {
           <div className="space-y-8">
             {essays.map((essay) => (
               <article key={essay.slug} className="border-b border-gray-200 dark:border-gray-800 pb-8 last:border-0">
-                <time dateTime={new Date(essay.date).toISOString()} className="text-sm text-gray-500 dark:text-gray-500">
+                <time dateTime={new Date(essay.date).toISOString()} className="text-sm text-gray-500 dark:text-gray-400">
                   {essay.date}
                 </time>
                 <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100 mt-2 mb-3">
@@ -39,6 +40,8 @@ const Essays: React.FC = () => {
               </article>
             ))}
           </div>
+
+          <NewsletterSignup />
         </div>
       </div>
     </>

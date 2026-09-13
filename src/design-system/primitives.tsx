@@ -8,10 +8,19 @@ export interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
 
 export const Heading = forwardRef<HTMLHeadingElement, HeadingProps>(
   ({ as: Component = 'h2', children, className, ...props }, ref) => {
+    const sizeClasses = {
+      h1: 'text-4xl',
+      h2: 'text-2xl',
+      h3: 'text-xl',
+      h4: 'text-lg',
+      h5: 'text-base',
+      h6: 'text-sm',
+    }
+
     return (
       <Component
         ref={ref}
-        className={cn('font-semibold text-gray-900 dark:text-gray-100', className)}
+        className={cn(sizeClasses[Component], 'font-semibold text-gray-900 dark:text-gray-100', className)}
         {...props}
       >
         {children}
@@ -34,7 +43,7 @@ export const Text = forwardRef<HTMLParagraphElement, TextProps>(
         ref={ref}
         className={cn(
           muted
-            ? 'text-gray-500 dark:text-gray-500'
+            ? 'text-gray-500 dark:text-gray-400'
             : 'text-gray-700 dark:text-gray-300',
           className
         )}

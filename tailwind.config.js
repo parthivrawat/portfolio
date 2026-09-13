@@ -64,8 +64,8 @@ export default {
         '4xl': ['48px', { lineHeight: '1.2' }],
       },
       maxWidth: {
-        'prose': '680px',
-        'content': '800px',
+        'prose': '880px',
+        'content': '1000px',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in',

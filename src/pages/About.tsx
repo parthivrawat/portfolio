@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async'
+import { NewsletterSignup } from '@components'
 import { skills, experiences, achievements, coreStrengths, learningGoals } from '@/data/aboutData'
 
 const About: React.FC = () => {
@@ -66,7 +67,7 @@ const About: React.FC = () => {
                   <p className="text-primary-600 dark:text-primary-400">
                     {exp.company}
                   </p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500 mb-3">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
                     {exp.date} | {exp.location}
                   </p>
                   <ul className="space-y-2 list-disc list-inside text-gray-700 dark:text-gray-300">
@@ -154,6 +155,7 @@ const About: React.FC = () => {
             </div>
           </section>
 
+          <NewsletterSignup />
         </div>
       </div>
     </>
