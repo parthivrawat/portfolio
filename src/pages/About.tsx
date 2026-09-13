@@ -3,98 +3,9 @@ import { Helmet } from 'react-helmet-async'
 import { HiDownload } from 'react-icons/hi'
 import { Tooltip } from 'react-tooltip'
 import { PageSection } from '@components/templates/PageSection'
+import { Badge } from '@/design-system'
+import { skills, experiences, achievements, coreStrengths, learningGoals } from '@/data/aboutData'
 
-interface Skill {
-  title: string
-  description: string
-  icon: string
-}
-
-interface Experience {
-  title: string
-  company: string
-  date: string
-  location: string
-  duties: string[]
-}
-
-interface Achievement {
-  title: string
-  description: string
-  icon: string
-}
-
-const skills: Skill[] = [
-  {
-    title: 'Golang',
-    description: 'Concurrency-first backend services',
-    icon: '🐹',
-  },
-  {
-    title: 'ReactJS',
-    description: 'Micro frontends & module federation',
-    icon: '⚛️',
-  },
-  {
-    title: 'GraphQL & REST',
-    description: 'High-performance API design',
-    icon: '🔗',
-  },
-  {
-    title: 'MySQL & MongoDB',
-    description: 'Query tuning & data integrity',
-    icon: '🗄️',
-  },
-  {
-    title: 'Google Cloud Platform',
-    description: 'App Engine, observability, scaling',
-    icon: '☁️',
-  },
-  {
-    title: 'AI Tooling',
-    description: 'LLM-powered developer velocity',
-    icon: '🤖',
-  },
-]
-
-const experiences: Experience[] = [
-  {
-    title: 'Full-Stack Developer',
-    company: 'MethodWorks Pvt. Ltd.',
-    date: 'May 2023 – Dec 2025',
-    location: 'Noida, India',
-    duties: [
-      'Delivered Go + React enterprise modules with decentralized identity workflows',
-      'Implemented secure REST APIs, cryptography practices, and module-federated frontends',
-      'Maintained GCP App Engine deployments with reliability, monitoring, and RBAC admin consoles',
-    ],
-  },
-  {
-    title: 'Software Development Intern',
-    company: 'Gao Tek Inc.',
-    date: 'Jan 2023 – Apr 2023',
-    location: 'Bangalore, India',
-    duties: [
-      'Researched requirements and integrated APIs with existing codebases',
-      'Collaborated with senior developers to debug and enhance libraries',
-    ],
-  },
-]
-
-const achievements: Achievement[] = [
-  {
-    title: 'Quantum Computing Scholar',
-    description:
-      'Completed The Coding School fellowship exploring quantum circuits and algorithms.',
-    icon: '🧠',
-  },
-  {
-    title: 'Open Source Mentor',
-    description:
-      'Guided developers on Golang, CI/CD, and scalable cloud patterns through community cohorts.',
-    icon: '🤝',
-  },
-]
 
 const About: React.FC = () => {
   return (
@@ -165,7 +76,7 @@ const About: React.FC = () => {
           }}
         >
           <div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             role="list"
           >
             {skills.map((skill, index) => (
@@ -282,6 +193,106 @@ const About: React.FC = () => {
           </div>
         </PageSection>
       </div>
+
+      {/* Core Strengths Section */}
+      <PageSection
+        className="section-padding bg-white/70 dark:bg-slate-950/50"
+        header={{
+          eyebrow: 'Strengths',
+          title: 'Core Strengths',
+          subtitle:
+            'Architectural and problem-solving muscles I bring to every team and codebase.',
+          className: 'text-center mb-12',
+        }}
+      >
+        <div className="flex flex-wrap justify-center gap-3" role="list">
+          {coreStrengths.map((strength, index) => (
+            <motion.div
+              key={strength}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              role="listitem"
+              aria-setsize={coreStrengths.length}
+              aria-posinset={index + 1}
+            >
+              <Badge variant="primary" className="text-base px-4 py-2">
+                {strength}
+              </Badge>
+            </motion.div>
+          ))}
+        </div>
+      </PageSection>
+
+      {/* Learning Goals Section */}
+      <PageSection
+        className="section-padding"
+        header={{
+          eyebrow: 'Growth',
+          title: 'Learning Focus',
+          subtitle:
+            'Active learning areas across languages, AI systems, and large-scale system design.',
+          className: 'text-center mb-12',
+        }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Object.entries(learningGoals).map(([key, topics]) => {
+            const sectionLabels: Record<string, string> = {
+              programmingLanguages: 'Programming Languages',
+              artificialIntelligence: 'Artificial Intelligence',
+              systemDesign: 'System Design',
+            }
+            const renderTopics = (
+              items: string[] | Record<string, string[]>
+            ) => {
+              if (Array.isArray(items)) {
+                return (
+                  <div className="flex flex-wrap gap-2">
+                    {items.map(item => (
+                      <Badge key={item} variant="outline">
+                        {item}
+                      </Badge>
+                    ))}
+                  </div>
+                )
+              }
+              return (
+                <div className="space-y-4">
+                  {Object.entries(items).map(([sub, subItems]) => (
+                    <div key={sub}>
+                      <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 capitalize">
+                        {sub}
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {subItems.map(item => (
+                          <Badge key={item} variant="outline">
+                            {item}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            }
+            return (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="surface-panel p-6 text-left"
+              >
+                <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  {sectionLabels[key]}
+                </h3>
+                {renderTopics(topics)}
+              </motion.div>
+            )
+          })}
+        </div>
+      </PageSection>
 
       <Tooltip
         id="about-tooltip"

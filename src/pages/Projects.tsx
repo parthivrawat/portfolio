@@ -12,6 +12,8 @@ import ProjectCard from '@/components/organisms/ProjectCard'
 import LoadingSpinner from '@/components/atoms/LoadingSpinner'
 import { useGitHubRepositories } from '@/hooks/useGitHub'
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback'
+import { caseStudies as caseStudiesData, type CaseStudy } from '@/data/caseStudies'
+import { Card, Badge } from '@/design-system'
 import { PageSection } from '@components/templates/PageSection'
 import AppErrorBoundary from '@/components/AppErrorBoundary'
 
@@ -19,37 +21,9 @@ const Projects: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [languageFilter, setLanguageFilter] = useState('')
+  const [caseStudyFilter, setCaseStudyFilter] = useState<'all' | NonNullable<CaseStudy['status']>>('all')
 
-  const caseStudies = [
-    {
-      title: 'URL Shortener Application',
-      timeframe: 'Jul 2022 – Aug 2022',
-      description:
-        'Go (Golang) platform backed by Gin, Google Cloud Datastore, and Redis for high-performance redirection and analytics-ready telemetry.',
-      impact:
-        'Enabled frictionless sharing workflows with sub-20ms redirects at scale, deployed on GCP App Engine for zero-downtime rollouts.',
-      links: [
-        {
-          label: 'GitHub Repo',
-          href: 'https://github.com/parthivrawat/url-shortener',
-        },
-      ],
-    },
-    {
-      title: 'Heart Disease Monitoring System',
-      timeframe: 'Jan 2021 – Apr 2021',
-      description:
-        'Analytics pipeline applying Logistic Regression, Naive Bayes, SVM, K-NN, Decision Tree, Random Forest, and Neural Networks over medical datasets.',
-      impact:
-        'Delivered high-confidence predictions to surface probable heart disease correlations, guiding early interventions and research insights.',
-      links: [
-        {
-          label: 'Project GitHub',
-          href: 'https://github.com/parthivrawat/heart-disease-monitoring',
-        },
-      ],
-    },
-  ]
+  const caseStudies = caseStudiesData
 
   const {
     repositories,
@@ -108,6 +82,11 @@ const Projects: React.FC = () => {
     })
   }, [repositories, debouncedSearchTerm, languageFilter])
 
+  const filteredCaseStudies = useMemo(() => {
+    if (caseStudyFilter === 'all') return caseStudies
+    return caseStudies.filter(study => study.status === caseStudyFilter)
+  }, [caseStudyFilter, caseStudies])
+
   const handleRetry = useCallback(() => {
     resetError()
     refetch()
@@ -165,11 +144,11 @@ const Projects: React.FC = () => {
   }
 
   return (
-    <PageSection
+      <PageSection
       className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8"
-      backgroundClassName="bg-[radial-gradient(120%_140%_at_50%_-10%,#e8efff_0%,#f9fbff_55%,#eef3ff_100%)] dark:bg-[radial-gradient(150%_160%_at_50%_-10%,#0a1325_0%,#0f172a_40%,#020817_100%)]"
-      header={{
-        title: (
+        backgroundClassName="bg-[radial-gradient(120%_140%_at_50%_-10%,#e8efff_0%,#f9fbff_55%,#eef3ff_100%)] dark:bg-[radial-gradient(150%_160%_at_50%_-10%,#0a1325_0%,#0f172a_40%,#020817_100%)]"
+        header={{
+          title: (
           <>
             <span className="eyebrow mb-4 mx-auto">Showcase</span>
             <h1 className="font-heading text-4xl sm:text-5xl text-slate-900 dark:text-white mb-6">
@@ -185,7 +164,7 @@ const Projects: React.FC = () => {
         className: 'surface-panel p-10 text-center mb-12',
       }}
     >
-      {/* Case studies directly from resume */}
+      {/* Case studies from real data */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -196,62 +175,111 @@ const Projects: React.FC = () => {
           <div>
             <span className="eyebrow mb-4 block">Case Studies</span>
             <h2 className="text-3xl font-heading text-slate-900 dark:text-white">
-              Spotlight Projects from the Resume
+              Spotlight Projects
             </h2>
           </div>
           <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
-            Gradient of self-initiated and academic work where I fused
-            cloud-native architecture, performance engineering, and modern web
-            technologies to deliver impactful solutions.
+            A cross-section of production, in-progress, and exploratory work
+            where I combine cloud-native architecture, AI systems, and modern
+            web technologies to solve real problems.
           </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter case studies by status">
+          {(['all', 'in-progress', 'completed', 'exploration'] as const).map(status => {
+            const label = status === 'all' ? 'All' : status.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())
+            const active = caseStudyFilter === status
+            return (
+              <button
+                key={status}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                aria-pressed={active}
+                onClick={() => setCaseStudyFilter(status)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${active ? 'bg-primary-600 text-white' : 'bg-white/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800'}`}
+              >
+                {label}
+              </button>
+            )
+          })}
         </div>
       </motion.div>
 
-      {/* Case Studies Section */}
-      <div className="mt-16 relative">
-        <h2 className="font-heading text-3xl text-slate-900 dark:text-white mb-8 text-center">
-          Case Studies
-        </h2>
-        <div className="grid gap-8 md:grid-cols-2 relative z-10" role="list">
-          {caseStudies.map((study, index) => (
-            <div
-              key={study.title}
-              className="surface-panel border border-white/40 dark:border-slate-800 p-6 space-y-4"
+      {/* Case Studies Grid */}
+      <div className="grid gap-8 md:grid-cols-2 relative z-10" role="list">
+        {filteredCaseStudies.map((study, index) => {
+          const statusStyles: Record<string, string> = {
+            completed: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200',
+            'in-progress': 'bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-200',
+            exploration: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
+          }
+          return (
+            <Card
+              key={study.id}
+              className="p-6 h-full flex flex-col"
               role="listitem"
-              aria-setsize={caseStudies.length}
+              aria-setsize={filteredCaseStudies.length}
               aria-posinset={index + 1}
             >
-              <div>
-                <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
-                  {study.title}
-                </h3>
-                <p className="text-sm text-primary-600 dark:text-primary-300">
-                  {study.timeframe}
-                </p>
+              <div className="flex items-start justify-between gap-4 mb-2">
+                <div>
+                  <h3 className="text-xl font-semibold text-slate-900 dark:text-white">
+                    {study.title}
+                  </h3>
+                  <p className="text-sm text-primary-600 dark:text-primary-300">
+                    {study.timeframe}
+                  </p>
+                </div>
+                {study.status && (
+                  <Badge className={statusStyles[study.status]}>
+                    {study.status}
+                  </Badge>
+                )}
               </div>
-              <p className="text-slate-600 dark:text-slate-300">
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 {study.description}
               </p>
-              <p className="text-slate-500 dark:text-slate-400 text-sm">
+              {study.technologies && study.technologies.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {study.technologies.map(tech => (
+                    <Badge key={tech} variant="primary">
+                      {tech}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              {study.features && study.features.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {study.features.map(feature => (
+                    <Badge key={feature} variant="outline">
+                      {feature}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-auto mb-4">
                 {study.impact}
               </p>
-              <div className="flex flex-wrap gap-3 pt-2">
-                {study.links.map(link => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-200"
-                  >
-                    {link.label}
-                    <HiArrowSmRight className="w-4 h-4" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+              {study.links.length > 0 && (
+                <div className="flex flex-wrap gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                  {study.links.map(link => (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-300 hover:text-primary-700 dark:hover:text-primary-200"
+                    >
+                      {link.label}
+                      <HiArrowSmRight className="w-4 h-4" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </Card>
+          )
+        })}
       </div>
 
       {/* Search and filter */}
@@ -374,7 +402,7 @@ const Projects: React.FC = () => {
           </p>
         </motion.div>
       )}
-    </PageSection>
+      </PageSection>
   )
 }
 
