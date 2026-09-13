@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { initSentry, ErrorBoundary } from './utils/error-handler'
 import App from './App'
+import LoadingSpinner from '@components/atoms/LoadingSpinner'
 import './styles/globals.css'
 
 const queryClient = new QueryClient({
@@ -28,7 +29,7 @@ const ErrorFallback = ({
   resetError: () => void
 }) => (
   <div className="min-h-screen flex items-center justify-center p-4 bg-white dark:bg-gray-950">
-    <div className="max-w-prose">
+    <div className="max-w-prose mx-auto">
       <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
         Something went wrong
       </h2>
@@ -41,6 +42,7 @@ const ErrorFallback = ({
         </p>
       )}
       <button
+        type="button"
         onClick={resetError}
         className="text-primary-600 dark:text-primary-400 hover:underline"
       >
@@ -53,7 +55,7 @@ const ErrorFallback = ({
 const AppContainer = () => (
   <StrictMode>
     <ErrorBoundary fallback={ErrorFallback}>
-      <Suspense fallback={<div className="min-h-screen" />}>
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>}>
         <QueryClientProvider client={queryClient}>
           <HelmetProvider>
             <BrowserRouter>

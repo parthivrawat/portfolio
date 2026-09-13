@@ -26,7 +26,7 @@ export const PageSection: React.FC<PageSectionProps> = ({
         {header && (
           <header className={header.className ?? 'mb-12'}>
             {header.eyebrow && (
-              <span className="text-sm text-gray-500 dark:text-gray-500 uppercase tracking-wide">
+              <span className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                 {header.eyebrow}
               </span>
             )}

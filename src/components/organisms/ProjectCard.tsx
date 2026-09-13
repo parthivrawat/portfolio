@@ -45,7 +45,7 @@ const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
           {displayName}
         </h3>
         {project.language && (
-          <span className="text-sm text-gray-500 dark:text-gray-500 flex items-center gap-2">
+          <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
             <span className={`w-2 h-2 rounded-full ${languageColors[project.language] || 'bg-gray-400'}`} />
             {project.language}
           </span>
@@ -54,7 +54,7 @@ const ProjectCard = ({ project }: ProjectCardProps): JSX.Element => {
       <p className="text-gray-700 dark:text-gray-300 mb-3">
         {project.description || 'No description available'}
       </p>
-      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-500">
+      <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-gray-400">
         <span>★ {project.stargazers_count.toLocaleString()}</span>
         <span>{project.forks_count.toLocaleString()} forks</span>
         <span>

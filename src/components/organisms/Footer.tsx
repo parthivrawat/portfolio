@@ -6,9 +6,9 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 mt-16">
+    <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 mt-8">
       <div className="max-w-content mx-auto px-6 py-8 flex items-center justify-between gap-6">
-        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-500">
+        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
           <img
             src="/Monogram.png"
             alt=""

@@ -9,6 +9,7 @@ interface NavItem {
 }
 
 const navigation: NavItem[] = [
+  { name: 'Home', href: ROUTES.HOME },
   { name: 'Essays', href: ROUTES.ESSAYS },
   { name: 'Projects', href: ROUTES.PROJECTS },
   { name: 'About', href: ROUTES.ABOUT },
@@ -39,7 +40,6 @@ const Header: React.FC<{ id?: string }> = ({ id }) => {
           <Link
             to={ROUTES.HOME}
             className="inline-block"
-            aria-label="Parthiv Rawat home"
           >
             <img
               src="/Monogram.png"

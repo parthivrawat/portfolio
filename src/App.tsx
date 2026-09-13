@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { Header, Footer } from '@components/organisms'
 import LoadingSpinner from '@components/atoms/LoadingSpinner'
+import { RouteAnnouncer } from '@components'
 import { ROUTES } from '@/constants/routes'
 
 const Home = lazy(() => import('@pages/Home'))
@@ -17,6 +18,8 @@ const NotFound = lazy(() => import('@pages/NotFound'))
 function App() {
   return (
     <>
+      <RouteAnnouncer />
+
       <Helmet htmlAttributes={{ lang: 'en' }}>
         <title>Parthiv Rawat | Full-Stack Developer</title>
         <meta
